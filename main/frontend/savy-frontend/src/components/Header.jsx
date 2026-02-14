@@ -1,7 +1,6 @@
 export default function Header() {
   return (
-    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-40">
-      {/* Left - Search */}
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-40 ml-[260px]">
       <div className="flex items-center gap-4">
         <div className="relative">
           <svg 
@@ -9,7 +8,7 @@ export default function Header() {
             height="18" 
             viewBox="0 0 24 24" 
             fill="none" 
-            stroke="#94a3b8" 
+            stroke="#9ca3af" 
             strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round"
@@ -21,15 +20,14 @@ export default function Header() {
           <input 
             type="text" 
             placeholder="Search patients, sessions..." 
-            className="w-72 pl-10 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:bg-white transition-all"
+            className="w-72 pl-10 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:bg-white transition-all"
           />
         </div>
       </div>
 
-      {/* Center - Live Recording */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full">
-          <div className="pulse-dot" />
+          <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
           <span className="text-sm font-semibold text-red-600 tracking-wider">LIVE RECORDING</span>
         </div>
         <div className="text-xs text-gray-400 ml-2">
@@ -37,7 +35,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Right - Actions */}
       <div className="flex items-center gap-3">
         <button className="w-10 h-10 rounded-xl bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -60,7 +57,7 @@ export default function Header() {
           </svg>
         </button>
 
-        <button className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium text-sm rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all flex items-center gap-2">
+        <button className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-semibold text-sm rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all flex items-center gap-2">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />

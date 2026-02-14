@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard Home', icon: DashboardIcon },
-  { id: 'patients', label: 'Patient List', icon: PatientsIcon },
-  { id: 'archives', label: 'Session Archives', icon: ArchivesIcon },
-  { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon },
+  { id: 'dashboard', label: 'Dashboard Home', icon: DashboardIcon, path: '/dashboard' },
+  { id: 'patients', label: 'Patient List', icon: PatientsIcon, path: '/patients' },
+  { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
+  { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
 ];
 
 const systemItems = [
@@ -75,7 +75,7 @@ function SupportIcon() {
 
 function BrainIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 4.5a2.5 2.5 0 0 0-4.96-.46 2.5 2.5 0 0 0-1.98 3 2.5 2.5 0 0 0 1.32 4.24 3 3 0 0 0 .34 5.58 2.5 2.5 0 0 0 5.28.55" />
       <path d="M12 4.5a2.5 2.5 0 0 1 4.96-.46 2.5 2.5 0 0 1 1.98 3 2.5 2.5 0 0 1-1.32 4.24 3 3 0 0 1-.34 5.58 2.5 2.5 0 0 1-5.28.55" />
       <path d="M12 4.5v16" />
@@ -84,31 +84,45 @@ function BrainIcon() {
 }
 
 export default function Sidebar() {
-  const [activeItem, setActiveItem] = useState('dashboard');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getActiveItem = () => {
+    const path = location.pathname;
+    if (path.startsWith('/patients')) return 'patients';
+    if (path.startsWith('/archives')) return 'archives';
+    if (path.startsWith('/analytics')) return 'analytics';
+    return 'dashboard';
+  };
+
+  const activeItem = getActiveItem();
+
+  const handleNavigate = (item) => {
+    navigate(item.path);
+  };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-white border-r border-gray-100 flex flex-col z-50 font-sans">
-      {/* Logo Section */}
+    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-white border-r border-gray-200 flex flex-col z-50 font-sans">
       <div className="px-6 py-6 flex items-center gap-3">
-        <div className="w-8 h-8 bg-[#f97316] rounded-lg flex items-center justify-center">
+        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
           <BrainIcon />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-gray-900 tracking-tight">Neuro Monitor</h1>
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">NEUROVAULT</h1>
+          <p className="text-xs text-cyan-500">Neural Data Steward</p>
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="flex-1 flex flex-col justify-between overflow-y-auto">
         <nav className="px-4 space-y-1 mt-2">
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveItem(item.id)}
+              onClick={() => handleNavigate(item)}
               className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
                 activeItem === item.id 
-                  ? 'bg-orange-50 text-[#f97316]' 
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-cyan-50 text-cyan-600 border border-cyan-200' 
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
               <item.icon />
@@ -123,8 +137,7 @@ export default function Sidebar() {
           {systemItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveItem(item.id)}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
             >
               <item.icon />
               <span>{item.label}</span>
@@ -132,11 +145,10 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* User Profile Section */}
-        <div className="p-4 border-t border-gray-100 mb-2">
-            <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
-                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+        <div className="p-4 border-t border-gray-200 mb-2">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer transition-colors border border-gray-100">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center overflow-hidden">
+                 <span className="text-white font-bold text-sm">AT</span>
             </div>
             <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">Dr. Aris Thorne</p>
