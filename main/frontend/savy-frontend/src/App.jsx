@@ -10,6 +10,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import CustomerProfilePage from './pages/CustomerProfilePage';
 import UserPage from './pages/UserPage';
 import DoctorAccessRequestPage from './pages/DoctorAccessRequestPage';
+import DoctorRequestAccessPage from './pages/DoctorRequestAccessPage';
 import MyRequestsPage from './pages/MyRequestsPage';
 import LoginPage from './pages/LoginPage';
 
@@ -173,8 +174,8 @@ export default function App() {
                 element={userType === 'doctor' ? <CustomerProfilePage /> : <Navigate to="/dashboard" replace />} 
               />
               <Route 
-                path="/doctor-access" 
-                element={userType === 'doctor' ? <DoctorAccessRequestPage /> : <Navigate to="/dashboard" replace />} 
+                path="/request-access" 
+                element={userType === 'doctor' ? <DoctorRequestAccessPage /> : <Navigate to="/dashboard" replace />} 
               />
               
               {/* Fallback route */}

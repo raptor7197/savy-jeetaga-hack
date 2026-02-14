@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const UserPage = () => {
   const user = {
@@ -32,53 +32,11 @@ const UserPage = () => {
     ]
   };
 
-  const [accessRequests, setAccessRequests] = useState([
-    { id: 'DOC-001', name: 'Dr. Aris Thorne', specialty: 'Neurologist', hospital: 'NeuroCare Hospital', requestDate: '2024-01-28', status: 'pending' },
-    { id: 'DOC-002', name: 'Dr. Priya Patel', specialty: 'Psychiatrist', hospital: 'Mind Wellness Center', requestDate: '2024-01-25', status: 'granted' },
-    { id: 'DOC-003', name: 'Dr. Rajesh Kumar', specialty: 'General Physician', hospital: 'City Hospital', requestDate: '2024-01-20', status: 'denied' }
-  ]);
-
-  const [isProcessing, setIsProcessing] = useState(null);
-
-  const handleGrantAccess = (doctorId) => {
-    setIsProcessing(doctorId);
-    setTimeout(() => {
-      setAccessRequests(accessRequests.map(request => 
-        request.id === doctorId ? { ...request, status: 'granted' } : request
-      ));
-      setIsProcessing(null);
-    }, 1200);
-  };
-
-  const handleDenyAccess = (doctorId) => {
-    setIsProcessing(doctorId);
-    setTimeout(() => {
-      setAccessRequests(accessRequests.map(request => 
-        request.id === doctorId ? { ...request, status: 'denied' } : request
-      ));
-      setIsProcessing(null);
-    }, 1200);
-  };
-
-  const handleRevokeAccess = (doctorId) => {
-    setIsProcessing(doctorId);
-    setTimeout(() => {
-      setAccessRequests(accessRequests.map(request => 
-        request.id === doctorId ? { ...request, status: 'denied' } : request
-      ));
-      setIsProcessing(null);
-    }, 1200);
-  };
-
-  const pendingRequests = accessRequests.filter(request => request.status === 'pending');
-  const grantedAccess = accessRequests.filter(request => request.status === 'granted');
-  const deniedRequests = accessRequests.filter(request => request.status === 'denied');
-
   return (
     <div className="ml-[260px] p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-3">My Profile</h1>
-        <p className="text-gray-600">Manage your personal health information and doctor access</p>
+        <p className="text-gray-600">Manage your personal health information</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -145,131 +103,6 @@ const UserPage = () => {
         </div>
 
         <div className="lg:col-span-2">
-          {pendingRequests.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border-l-4 border-yellow-500 transform hover:scale-[1.01] transition-transform duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-800">Access Requests</h3>
-                <span className="px-4 py-2 bg-yellow-100 text-yellow-800 text-sm rounded-full">
-                  {pendingRequests.length} Pending
-                </span>
-              </div>
-              
-              <div className="space-y-5">
-                {pendingRequests.map(request => (
-                  <div key={request.id} className="p-6 border border-gray-200 rounded-xl hover:border-cyan-300 transition-all duration-300 transform hover:translate-x-1">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-md">
-                          <span className="text-white text-sm font-bold">{request.name.charAt(0)}</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-800">{request.name}</h4>
-                          <p className="text-sm text-gray-600">{request.specialty} - {request.hospital}</p>
-                        </div>
-                      </div>
-                      <span className="text-xs text-gray-500">{request.requestDate}</span>
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => handleGrantAccess(request.id)}
-                        disabled={isProcessing === request.id}
-                        className={`px-5 py-3 text-sm rounded-lg transition-all duration-200 transform ${
-                          isProcessing === request.id
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-green-600 hover:bg-green-700 text-white hover:scale-105'
-                        }`}
-                      >
-                        {isProcessing === request.id ? (
-                          <div className="flex items-center justify-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Processing...
-                          </div>
-                        ) : (
-                          'Grant Access'
-                        )}
-                      </button>
-                      <button
-                        onClick={() => handleDenyAccess(request.id)}
-                        disabled={isProcessing === request.id}
-                        className={`px-5 py-3 text-sm rounded-lg transition-all duration-200 transform ${
-                          isProcessing === request.id
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-red-600 hover:bg-red-700 text-white hover:scale-105'
-                        }`}
-                      >
-                        {isProcessing === request.id ? (
-                          <div className="flex items-center justify-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Processing...
-                          </div>
-                        ) : (
-                          'Deny'
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {grantedAccess.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border-l-4 border-green-500 transform hover:scale-[1.01] transition-transform duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-800">Doctors with Access</h3>
-                <span className="px-4 py-2 bg-green-100 text-green-800 text-sm rounded-full">
-                  {grantedAccess.length} Active
-                </span>
-              </div>
-              
-              <div className="space-y-5">
-                {grantedAccess.map(request => (
-                  <div key={request.id} className="p-6 border border-gray-200 rounded-xl hover:border-green-300 transition-all duration-300 transform hover:translate-x-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center shadow-md">
-                          <span className="text-white text-sm font-bold">{request.name.charAt(0)}</span>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-800">{request.name}</h4>
-                          <p className="text-sm text-gray-600">{request.specialty} - {request.hospital}</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleRevokeAccess(request.id)}
-                        disabled={isProcessing === request.id}
-                        className={`px-5 py-3 text-sm rounded-lg transition-all duration-200 transform ${
-                          isProcessing === request.id
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-red-600 hover:bg-red-700 text-white hover:scale-105'
-                        }`}
-                      >
-                        {isProcessing === request.id ? (
-                          <div className="flex items-center justify-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Processing...
-                          </div>
-                        ) : (
-                          'Revoke Access'
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 transform hover:scale-[1.01] transition-transform duration-300">
             <h3 className="text-xl font-semibold text-gray-800 mb-6">Personal Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -336,6 +169,20 @@ const UserPage = () => {
                     </span>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 transform hover:scale-[1.01] transition-transform duration-300">
+            <h3 className="text-xl font-semibold text-gray-800 mb-6">Emergency Contact</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">Contact Name</label>
+                <p className="text-sm text-gray-800">{user.emergencyContact}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">Phone Number</label>
+                <p className="text-sm text-gray-800">{user.emergencyPhone}</p>
               </div>
             </div>
           </div>

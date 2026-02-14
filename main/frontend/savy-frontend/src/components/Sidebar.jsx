@@ -5,14 +5,14 @@ const patientNavItems = [
   { id: 'sessions', label: 'Session History', icon: SessionsIcon, path: '/sessions' },
   { id: 'requests', label: 'My Requests', icon: PermissionsIcon, path: '/requests' },
   { id: 'user', label: 'My Profile', icon: UserIcon, path: '/user' },
-  { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
+  // { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
 ];
 
 // Doctor-specific navigation items
 const doctorNavItems = [
   { id: 'sessions', label: 'Session History', icon: SessionsIcon, path: '/sessions' },
-  { id: 'doctor-access', label: 'Access Requests', icon: AccessIcon, path: '/doctor-access' },
+  { id: 'request-access', label: 'Request Access', icon: AccessIcon, path: '/request-access' },
   { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
 ];
@@ -143,7 +143,7 @@ export default function Sidebar() {
     const path = location.pathname;
     if (path.startsWith('/sessions')) return 'sessions';
     if (path.startsWith('/requests')) return 'requests';
-    if (path.startsWith('/doctor-access')) return 'doctor-access';
+    if (path.startsWith('/request-access')) return 'request-access';
     if (path.startsWith('/archives')) return 'archives';
     if (path.startsWith('/analytics')) return 'analytics';
     if (path.startsWith('/user')) return 'user';

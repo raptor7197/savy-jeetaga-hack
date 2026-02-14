@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: savy-neuro-data
+Version: 0.1.0
+Summary: Privacy-preserving neural data management with blockchain consent
+Author-email: SAVY Team <dev@savy.ai>
+License-Expression: Apache-2.0
+Project-URL: homepage, https://github.com/savy-ai/neuro-data
+Project-URL: repository, https://github.com/savy-ai/neuro-data
+Project-URL: documentation, https://docs.savy.ai
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<0.105,>=0.104
+Requires-Dist: uvicorn[standard]<0.25,>=0.24
+Requires-Dist: python-multipart<0.0.7,>=0.0.6
+Requires-Dist: pydantic<2.6,>=2.5
+Requires-Dist: websockets<12.1,>=12.0
+Requires-Dist: numpy<1.27,>=1.26
+Requires-Dist: scipy<1.12,>=1.11
+Requires-Dist: matplotlib<3.9,>=3.8
+Requires-Dist: pandas<2.2,>=2.1
+Requires-Dist: seaborn<0.13,>=0.12
+Requires-Dist: scikit-learn<1.4,>=1.3
+Requires-Dist: python-jose[cryptography]<3.4,>=3.3
+Requires-Dist: passlib[bcrypt]<1.8,>=1.7
+Requires-Dist: httpx<0.26,>=0.25
+Requires-Dist: pytest<7.5,>=7.4
+Requires-Dist: pytest-asyncio<0.24,>=0.23
+Requires-Dist: python-dotenv<1.1,>=1.0
+
+# Savy Neuro Data Management
+
+Privacy-preserving neural data management with blockchain consent.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+## Usage
+
+```bash
+python -m services.brain_signal_generator
+```
+
+## Features
+
+- Privacy-preserving neural data management
+- Blockchain-based consent management
+- EEG signal processing
+- Real-time brain signal generation and analysis

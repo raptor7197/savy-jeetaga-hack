@@ -18,14 +18,12 @@ const weeklyData = [
   { day: 'Sat', sessions: 32, patients: 18 },
   { day: 'Sun', sessions: 18, patients: 12 },
 ];
-
 const conditionData = [
-  { condition: 'Epilepsy', patients: 42, percentage: 27, color: '#0ea5e9' },
-  { condition: 'Sleep Disorders', patients: 35, percentage: 22, color: '#8b5cf6' },
-  { condition: 'Alzheimer', patients: 28, percentage: 18, color: '#10b981' },
-  { condition: 'Parkinson', patients: 22, percentage: 14, color: '#f59e0b' },
-  { condition: 'Migraine', patients: 18, percentage: 12, color: '#ec4899' },
-  { condition: 'Other', patients: 11, percentage: 7, color: '#6b7280' },
+  { condition: 'REM Sleep', patients: 45, percentage: 25, color: '#0ea5e9' },
+  { condition: 'Deep Sleep', patients: 38, percentage: 21, color: '#8b5cf6' },
+  { condition: 'Light Sleep', patients: 52, percentage: 29, color: '#10b981' },
+  { condition: 'Awake', patients: 24, percentage: 13, color: '#f59e0b' },
+  { condition: 'Sleep Onset', patients: 20, percentage: 12, color: '#ec4899' },
 ];
 
 const recentActivity = [
@@ -116,16 +114,16 @@ function DonutChart({ data }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const center = size / 2;
-  
+
   let accumulatedOffset = 0;
-  
+
   return (
     <svg width={size} height={size} className="transform -rotate-90">
-      {data.map((item, index) => {
+      {data.map((item) => {
         const segmentLength = (item.percentage / 100) * circumference;
         const offset = accumulatedOffset;
         accumulatedOffset += segmentLength;
-        
+
         return (
           <circle
             key={item.condition}
@@ -137,7 +135,8 @@ function DonutChart({ data }) {
             strokeWidth={strokeWidth}
             strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
             strokeDashoffset={-offset}
-            className="transition-all duration-500"
+            className="transition-transform duration-300 ease-out hover:scale-[1.05]"
+            style={{ transformOrigin: `${center}px ${center}px` }}
           />
         );
       })}

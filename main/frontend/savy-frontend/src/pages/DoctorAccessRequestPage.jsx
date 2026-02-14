@@ -1,53 +1,124 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const DoctorAccessRequestPage = () => {
-  const patients = [
-    { id: 'USR-2024-001', name: 'Rahul Sharma', age: 34, condition: 'Migraine', status: 'Active', lastSession: '2024-01-15', hasAccess: false },
-    { id: 'USR-2024-002', name: 'Priya Patel', age: 28, condition: 'Anxiety', status: 'Monitoring', lastSession: '2024-01-20', hasAccess: true },
-    { id: 'USR-2024-003', name: 'Amit Kumar', age: 42, condition: 'Epilepsy', status: 'Critical', lastSession: '2024-01-25', hasAccess: false },
-    { id: 'USR-2024-004', name: 'Neha Singh', age: 31, condition: 'Insomnia', status: 'Active', lastSession: '2024-01-18', hasAccess: true },
-    { id: 'USR-2024-005', name: 'Rajesh Gupta', age: 45, condition: 'Depression', status: 'Monitoring', lastSession: '2024-01-22', hasAccess: false },
-    { id: 'USR-2024-006', name: 'Sneha Reddy', age: 29, condition: 'ADHD', status: 'Active', lastSession: '2024-01-19', hasAccess: true },
-    { id: 'USR-2024-007', name: 'Vikram Singh', age: 38, condition: 'Chronic Pain', status: 'Critical', lastSession: '2024-01-24', hasAccess: false },
-    { id: 'USR-2024-008', name: 'Ananya Desai', age: 33, condition: 'PTSD', status: 'Monitoring', lastSession: '2024-01-21', hasAccess: true }
-  ];
+  const [requests, setRequests] = useState([
+    {
+      id: 'REQ-001',
+      patientId: 'USR-2024-001',
+      patientName: 'Rahul Sharma',
+      age: 34,
+      condition: 'Migraine',
+      status: 'active',
+      requestDate: '2024-01-25',
+      expiryDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      scope: 'EEG Records, Medical History'
+    },
+    {
+      id: 'REQ-002',
+      patientId: 'USR-2024-002',
+      patientName: 'Priya Patel',
+      age: 28,
+      condition: 'Anxiety',
+      status: 'active',
+      requestDate: '2024-01-20',
+      expiryDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+      scope: 'Mental Health Records'
+    },
+    {
+      id: 'REQ-003',
+      patientId: 'USR-2024-003',
+      patientName: 'Amit Kumar',
+      age: 42,
+      condition: 'Epilepsy',
+      status: 'expired',
+      requestDate: '2024-01-15',
+      expiryDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      scope: 'EEG Records'
+    },
+    {
+      id: 'REQ-004',
+      patientId: 'USR-2024-004',
+      patientName: 'Neha Singh',
+      age: 31,
+      condition: 'Insomnia',
+      status: 'pending',
+      requestDate: '2024-01-28',
+      expiryDate: null,
+      scope: 'Sleep Study Records'
+    },
+    {
+      id: 'REQ-005',
+      patientId: 'USR-2024-005',
+      patientName: 'Rajesh Gupta',
+      age: 45,
+      condition: 'Depression',
+      status: 'denied',
+      requestDate: '2024-01-22',
+      expiryDate: null,
+      scope: 'Medical History'
+    }
+  ]);
 
-  const [isRequesting, setIsRequesting] = useState(null);
-  const [requestSuccess, setRequestSuccess] = useState(null);
+  useEffect(() => {
+    const checkExpiry = () => {
+      const now = new Date();
+      setRequests(prev => prev.map(request => {
+        if (request.expiryDate && request.expiryDate < now && request.status === 'active') {
+          return { ...request, status: 'expired' };
+        }
+        return request;
+      }));
+    };
 
-  const handleRequestAccess = (patientId) => {
-    setIsRequesting(patientId);
-    setTimeout(() => {
-      setIsRequesting(null);
-      setRequestSuccess(patientId);
-      setTimeout(() => {
-        setRequestSuccess(null);
-      }, 2000);
-    }, 1500);
+    checkExpiry();
+    const interval = setInterval(checkExpiry, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getTimeRemaining = (expiryDate) => {
+    if (!expiryDate) return 'N/A';
+    const now = new Date();
+    const difference = expiryDate - now;
+    
+    if (difference <= 0) return 'Expired';
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (days > 0) {
+      return `${days}d ${hours}h left`;
+    } else if (hours > 0) {
+      return `${hours}h ${minutes}m left`;
+    } else {
+      return `${minutes}m left`;
+    }
   };
+
+  const [filter, setFilter] = useState('all');
+  const filteredRequests = filter === 'all'
+    ? requests
+    : requests.filter(request => request.status === filter);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const searchedRequests = searchTerm
+    ? filteredRequests.filter(request =>
+        request.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        request.patientId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        request.condition.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : filteredRequests;
 
   const handleViewData = (patientId) => {
     alert(`Viewing data for patient ${patientId}`);
   };
 
-  const [filter, setFilter] = useState('all');
-  const filteredPatients = filter === 'all' 
-    ? patients 
-    : patients.filter(patient => patient.hasAccess === (filter === 'granted'));
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const searchedPatients = searchTerm 
-    ? filteredPatients.filter(patient => 
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        patient.id.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : filteredPatients;
-
   return (
     <div className="ml-[260px] p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-3">Patient Access Requests</h1>
-        <p className="text-gray-600">Manage access to patient health data and submit access requests</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-3">My Access Requests</h1>
+        <p className="text-gray-600">Manage your patient data access requests and view permissions</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -60,8 +131,8 @@ const DoctorAccessRequestPage = () => {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Total Patients</p>
-              <p className="text-2xl font-bold text-gray-800">{patients.length}</p>
+              <p className="text-sm text-gray-600">Total Requests</p>
+              <p className="text-2xl font-bold text-gray-800">{requests.length}</p>
             </div>
           </div>
         </div>
@@ -75,8 +146,8 @@ const DoctorAccessRequestPage = () => {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Access Granted</p>
-              <p className="text-2xl font-bold text-gray-800">{patients.filter(p => p.hasAccess).length}</p>
+              <p className="text-sm text-gray-600">Active Access</p>
+              <p className="text-2xl font-bold text-gray-800">{requests.filter(r => r.status === 'active').length}</p>
             </div>
           </div>
         </div>
@@ -91,8 +162,8 @@ const DoctorAccessRequestPage = () => {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Pending Requests</p>
-              <p className="text-2xl font-bold text-gray-800">2</p>
+              <p className="text-sm text-gray-600">Pending</p>
+              <p className="text-2xl font-bold text-gray-800">{requests.filter(r => r.status === 'pending').length}</p>
             </div>
           </div>
         </div>
@@ -107,8 +178,8 @@ const DoctorAccessRequestPage = () => {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Access Denied</p>
-              <p className="text-2xl font-bold text-gray-800">{patients.filter(p => !p.hasAccess).length - 2}</p>
+              <p className="text-sm text-gray-600">Denied/Expired</p>
+              <p className="text-2xl font-bold text-gray-800">{requests.filter(r => r.status === 'denied' || r.status === 'expired').length}</p>
             </div>
           </div>
         </div>
@@ -122,17 +193,18 @@ const DoctorAccessRequestPage = () => {
               onChange={(e) => setFilter(e.target.value)}
               className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 outline-none cursor-pointer hover:border-gray-300 transition-colors"
             >
-              <option value="all">All Patients</option>
-              <option value="granted">Access Granted</option>
-              <option value="pending">Pending Requests</option>
-              <option value="denied">Access Denied</option>
+              <option value="all">All Requests</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="denied">Denied</option>
+              <option value="expired">Expired</option>
             </select>
           </div>
           
           <div className="relative">
             <input
               type="text"
-              placeholder="Search patients..."
+              placeholder="Search patients, conditions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent w-full md:w-64"
@@ -151,77 +223,76 @@ const DoctorAccessRequestPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Access Scope</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry</th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Session</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Access Status</th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {searchedPatients.map((patient) => (
-                <tr key={patient.id} className="hover:bg-gray-50 transition-colors transform hover:translate-x-1">
+              {searchedRequests.map((request) => (
+                <tr key={request.id} className="hover:bg-gray-50 transition-colors transform hover:translate-x-1">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mr-3 shadow-md">
-                        <span className="text-white text-sm font-bold">{patient.name.charAt(0)}</span>
+                        <span className="text-white text-sm font-bold">{request.patientName.charAt(0)}</span>
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">{patient.name}</div>
-                        <div className="text-sm text-gray-500">{patient.id}</div>
+                        <div className="font-medium text-gray-900">{request.patientName}</div>
+                        <div className="text-sm text-gray-500">{request.patientId} • {request.age} years</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{patient.age}</div>
+                    <div className="text-sm text-gray-900">{request.condition}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{patient.condition}</div>
+                    <div className="text-sm text-gray-900">{request.scope}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{request.requestDate}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {request.expiryDate ? (
+                      <div>
+                        <div className="text-sm text-gray-900">
+                          {request.expiryDate.toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}
+                        </div>
+                        <div className={`text-xs font-medium ${
+                          request.status === 'active' ? 'text-green-600' :
+                          request.status === 'expired' ? 'text-red-600' :
+                          'text-gray-500'
+                        }`}>
+                          {getTimeRemaining(request.expiryDate)}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-500">N/A</div>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      patient.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      patient.status === 'Monitoring' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
+                      request.status === 'active' ? 'bg-green-100 text-green-800' :
+                      request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      request.status === 'expired' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
                     }`}>
-                      {patient.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {patient.lastSession}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      patient.hasAccess ? 'bg-green-100 text-green-800' :
-                      isRequesting === patient.id ? 'bg-blue-100 text-blue-800' :
-                      requestSuccess === patient.id ? 'bg-green-100 text-green-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {isRequesting === patient.id ? 'Requesting...' :
-                       requestSuccess === patient.id ? 'Request Sent!' :
-                       patient.hasAccess ? 'Access Granted' : 'No Access'}
+                      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    {patient.hasAccess ? (
+                    {request.status === 'active' && (
                       <button
-                        onClick={() => handleViewData(patient.id)}
+                        onClick={() => handleViewData(request.patientId)}
                         className="text-cyan-600 hover:text-cyan-900 transform hover:scale-105 transition-transform"
                       >
                         View Data
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleRequestAccess(patient.id)}
-                        disabled={isRequesting === patient.id}
-                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-                          isRequesting === patient.id 
-                            ? 'bg-gray-400 text-white cursor-not-allowed' 
-                            : 'bg-cyan-600 hover:bg-cyan-700 text-white transform hover:scale-105'
-                        }`}
-                      >
-                        {isRequesting === patient.id ? 'Requesting...' : 'Request Access'}
                       </button>
                     )}
                   </td>
@@ -231,13 +302,13 @@ const DoctorAccessRequestPage = () => {
           </table>
         </div>
         
-        {searchedPatients.length === 0 && (
+        {searchedRequests.length === 0 && (
           <div className="text-center py-12">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <p className="text-gray-500">No patients found matching your criteria</p>
+            <p className="text-gray-500">No requests found matching your criteria</p>
           </div>
         )}
       </div>
