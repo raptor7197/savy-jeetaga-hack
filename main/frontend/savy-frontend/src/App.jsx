@@ -10,6 +10,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import CustomerProfilePage from './pages/CustomerProfilePage';
 import UserPage from './pages/UserPage';
 import DoctorAccessRequestPage from './pages/DoctorAccessRequestPage';
+import MyRequestsPage from './pages/MyRequestsPage';
 import LoginPage from './pages/LoginPage';
 
 function HeartRateIcon() {
@@ -141,6 +142,7 @@ export default function App() {
       {!isLoggedIn ? (
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       ) : (
@@ -148,15 +150,35 @@ export default function App() {
           <Sidebar />
           <div className="flex-1">
             <Header isRecording={isRecording} setIsRecording={setIsRecording} onLogout={handleLogout} />
-            <Routes>
-              <Route path="/" element={<Navigate to={userType === 'patient' ? '/user' : '/doctor-access'} replace />} />
+             <Routes>
+              <Route path="/" element={<Navigate to="/sessions" replace />} />
               <Route path="/dashboard" element={<DashboardPage isRecording={isRecording} />} />
               <Route path="/sessions" element={<SessionHistoryPage />} />
               <Route path="/archives" element={<SessionArchivesPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
-              <Route path="/profile" element={<CustomerProfilePage />} />
-              <Route path="/user" element={<UserPage />} />
-              <Route path="/doctor-access" element={<DoctorAccessRequestPage />} />
+              
+              {/* Patient-only routes */}
+              <Route 
+                path="/user" 
+                element={userType === 'patient' ? <UserPage /> : <Navigate to="/dashboard" replace />} 
+              />
+              <Route 
+                path="/requests" 
+                element={userType === 'patient' ? <MyRequestsPage /> : <Navigate to="/dashboard" replace />} 
+              />
+              
+              {/* Doctor-only routes */}
+              <Route 
+                path="/profile" 
+                element={userType === 'doctor' ? <CustomerProfilePage /> : <Navigate to="/dashboard" replace />} 
+              />
+              <Route 
+                path="/doctor-access" 
+                element={userType === 'doctor' ? <DoctorAccessRequestPage /> : <Navigate to="/dashboard" replace />} 
+              />
+              
+              {/* Fallback route */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </div>
         </div>

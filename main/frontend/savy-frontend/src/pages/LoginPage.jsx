@@ -39,12 +39,8 @@ const LoginPage = () => {
         localStorage.setItem('userName', expectedUser.name);
         localStorage.setItem('userId', expectedUser.id);
         
-        // Navigate based on user type
-        if (userType === 'patient') {
-          navigate('/user');
-        } else {
-          navigate('/doctor-access');
-        }
+        // Reload the page to ensure the login state is properly detected
+        window.location.href = '/dashboard';
       } else {
         // Login failed
         setError('Invalid email or password');

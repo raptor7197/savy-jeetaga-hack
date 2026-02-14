@@ -1,13 +1,20 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard Home', icon: DashboardIcon, path: '/dashboard' },
+// Patient-specific navigation items
+const patientNavItems = [
+  { id: 'sessions', label: 'Session History', icon: SessionsIcon, path: '/sessions' },
+  { id: 'requests', label: 'My Requests', icon: PermissionsIcon, path: '/requests' },
+  { id: 'user', label: 'My Profile', icon: UserIcon, path: '/user' },
+  { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
+  { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
+];
+
+// Doctor-specific navigation items
+const doctorNavItems = [
   { id: 'sessions', label: 'Session History', icon: SessionsIcon, path: '/sessions' },
   { id: 'doctor-access', label: 'Access Requests', icon: AccessIcon, path: '/doctor-access' },
   { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
-  { id: 'profile', label: 'Customer Profile', icon: ProfileIcon, path: '/profile' },
-  { id: 'user', label: 'My Profile', icon: UserIcon, path: '/user' },
 ];
 
 const systemItems = [
@@ -37,13 +44,31 @@ function SessionsIcon() {
   );
 }
 
-function PatientsIcon() {
+function PermissionsIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+      <line x1="12" y1="15" x2="12" y2="18" />
+    </svg>
+  );
+}
+
+function UserIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+      <path d="M12 11v6" />
+    </svg>
+  );
+}
+
+function AccessIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
     </svg>
   );
 }
@@ -73,25 +98,6 @@ function ProfileIcon() {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-      <path d="M12 11v6" />
-    </svg>
-  );
-}
-
-function AccessIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
     </svg>
   );
 }
@@ -128,16 +134,22 @@ function BrainIcon() {
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const userType = localStorage.getItem('userType');
+
+  // Determine which navigation items to show based on user type
+  const navItems = userType === 'doctor' ? doctorNavItems : patientNavItems;
 
   const getActiveItem = () => {
     const path = location.pathname;
     if (path.startsWith('/sessions')) return 'sessions';
+    if (path.startsWith('/requests')) return 'requests';
     if (path.startsWith('/doctor-access')) return 'doctor-access';
     if (path.startsWith('/archives')) return 'archives';
     if (path.startsWith('/analytics')) return 'analytics';
-    if (path.startsWith('/profile')) return 'profile';
     if (path.startsWith('/user')) return 'user';
-    return 'dashboard';
+    if (path.startsWith('/dashboard')) return 'dashboard';
+    // Return first item of current user's nav as default
+    return userType === 'doctor' ? 'sessions' : 'sessions';
   };
 
   const activeItem = getActiveItem();
@@ -145,6 +157,8 @@ export default function Sidebar() {
   const handleNavigate = (item) => {
     navigate(item.path);
   };
+
+  const userName = localStorage.getItem('userName');
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[260px] bg-white border-r border-gray-200 flex flex-col z-50 font-sans">
@@ -191,12 +205,13 @@ export default function Sidebar() {
         </nav>
 
         <div className="p-4 border-t border-gray-200 mb-2">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer transition-colors border border-gray-100">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer transition-colors border border-gray-100">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center overflow-hidden">
-                 <span className="text-white font-bold text-sm">RS</span>
+                 <span className="text-white font-bold text-sm">{userName?.charAt(0) || 'U'}</span>
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">rahul sharma</p>
+                <p className="text-sm font-semibold text-gray-900 truncate">{userName || 'User'}</p>
+                <p className="text-xs text-gray-500 capitalize">{userType || 'user'}</p>
             </div>
           </div>
         </div>

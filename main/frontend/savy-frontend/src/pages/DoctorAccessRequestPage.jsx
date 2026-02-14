@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const DoctorAccessRequestPage = () => {
-  // Mock patient data
   const patients = [
     { id: 'USR-2024-001', name: 'Rahul Sharma', age: 34, condition: 'Migraine', status: 'Active', lastSession: '2024-01-15', hasAccess: false },
     { id: 'USR-2024-002', name: 'Priya Patel', age: 28, condition: 'Anxiety', status: 'Monitoring', lastSession: '2024-01-20', hasAccess: true },
@@ -13,37 +12,29 @@ const DoctorAccessRequestPage = () => {
     { id: 'USR-2024-008', name: 'Ananya Desai', age: 33, condition: 'PTSD', status: 'Monitoring', lastSession: '2024-01-21', hasAccess: true }
   ];
 
-  // Request access state
   const [isRequesting, setIsRequesting] = useState(null);
   const [requestSuccess, setRequestSuccess] = useState(null);
 
-  // Handle request access
   const handleRequestAccess = (patientId) => {
     setIsRequesting(patientId);
-    // Simulate API call
     setTimeout(() => {
       setIsRequesting(null);
       setRequestSuccess(patientId);
-      // Reset success message after 2 seconds
       setTimeout(() => {
         setRequestSuccess(null);
       }, 2000);
     }, 1500);
   };
 
-  // Handle view data (only available if hasAccess is true)
   const handleViewData = (patientId) => {
-    // In a real application, this would navigate to the patient's detailed data page
     alert(`Viewing data for patient ${patientId}`);
   };
 
-  // Filter patients by access status
   const [filter, setFilter] = useState('all');
   const filteredPatients = filter === 'all' 
     ? patients 
     : patients.filter(patient => patient.hasAccess === (filter === 'granted'));
 
-  // Search functionality
   const [searchTerm, setSearchTerm] = useState('');
   const searchedPatients = searchTerm 
     ? filteredPatients.filter(patient => 
@@ -53,18 +44,16 @@ const DoctorAccessRequestPage = () => {
     : filteredPatients;
 
   return (
-    <div className="ml-[260px] p-8 bg-gray-50 min-h-screen">
-      {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Patient Access Requests</h1>
+    <div className="ml-[260px] p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-3">Patient Access Requests</h1>
         <p className="text-gray-600">Manage access to patient health data and submit access requests</p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-[1.02] transition-transform duration-300">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 shadow-md">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
@@ -77,9 +66,9 @@ const DoctorAccessRequestPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-[1.02] transition-transform duration-300">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 shadow-md">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
@@ -92,9 +81,9 @@ const DoctorAccessRequestPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-[1.02] transition-transform duration-300">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4 shadow-md">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="16" x2="12" y2="12" />
@@ -108,9 +97,9 @@ const DoctorAccessRequestPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-[1.02] transition-transform duration-300">
           <div className="flex items-center">
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4 shadow-md">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                 <line x1="12" y1="9" x2="12" y2="13" />
@@ -125,8 +114,7 @@ const DoctorAccessRequestPage = () => {
         </div>
       </div>
 
-      {/* Filter and Search */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 transform hover:scale-[1.01] transition-transform duration-300">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-2">
             <select
@@ -157,27 +145,26 @@ const DoctorAccessRequestPage = () => {
         </div>
       </div>
 
-      {/* Patients List */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Session</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Access Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Session</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Access Status</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {searchedPatients.map((patient) => (
-                <tr key={patient.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={patient.id} className="hover:bg-gray-50 transition-colors transform hover:translate-x-1">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mr-3 shadow-md">
                         <span className="text-white text-sm font-bold">{patient.name.charAt(0)}</span>
                       </div>
                       <div>
@@ -220,7 +207,7 @@ const DoctorAccessRequestPage = () => {
                     {patient.hasAccess ? (
                       <button
                         onClick={() => handleViewData(patient.id)}
-                        className="text-cyan-600 hover:text-cyan-900"
+                        className="text-cyan-600 hover:text-cyan-900 transform hover:scale-105 transition-transform"
                       >
                         View Data
                       </button>
@@ -228,10 +215,10 @@ const DoctorAccessRequestPage = () => {
                       <button
                         onClick={() => handleRequestAccess(patient.id)}
                         disabled={isRequesting === patient.id}
-                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                           isRequesting === patient.id 
                             ? 'bg-gray-400 text-white cursor-not-allowed' 
-                            : 'bg-cyan-600 hover:bg-cyan-700 text-white'
+                            : 'bg-cyan-600 hover:bg-cyan-700 text-white transform hover:scale-105'
                         }`}
                       >
                         {isRequesting === patient.id ? 'Requesting...' : 'Request Access'}

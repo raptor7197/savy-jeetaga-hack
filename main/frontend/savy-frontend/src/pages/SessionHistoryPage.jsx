@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const mockSessions = [
   { id: 'S001', patientName: 'John Smith', patientId: 'P001', date: '2024-01-15', duration: '45 min', type: 'Routine Checkup', status: 'Completed', dataSize: '12.5 MB' },
@@ -38,31 +39,61 @@ function EyeIcon() {
   );
 }
 
+function DownloadIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
 export default function SessionHistoryPage() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [hexCodes, setHexCodes] = useState([]);
 
-  // Generate 100 random hex codes
+  // Generate random hex codes
   const generateHexCodes = () => {
     const codes = [];
     for (let i = 0; i < 100; i++) {
       const hex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
       codes.push(hex);
     }
-    setHexCodes(codes);
+    return codes;
   };
 
-  // Open popup with hex codes
-  const handleEyeClick = () => {
-    generateHexCodes();
-    setIsPopupOpen(true);
+  // Handle view data - redirect to dashboard
+  const handleViewData = () => {
+    navigate('/dashboard');
   };
 
-  // Close popup
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
+  // Handle download JSON file
+  const handleDownload = (session) => {
+    const data = {
+      sessionId: session.id,
+      patientName: session.patientName,
+      patientId: session.patientId,
+      date: session.date,
+      duration: session.duration,
+      type: session.type,
+      status: session.status,
+      dataSize: session.dataSize,
+      hexCodes: generateHexCodes(),
+      generatedAt: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `session_${session.id}_${session.date}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const filteredSessions = mockSessions.filter(session => {
@@ -173,12 +204,22 @@ export default function SessionHistoryPage() {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">{session.dataSize}</td>
                 <td className="px-6 py-4">
-                  <button 
-                    onClick={handleEyeClick}
-                    className="text-gray-400 hover:text-cyan-600 transition-colors"
-                  >
-                    <EyeIcon />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={handleViewData}
+                      className="text-gray-400 hover:text-cyan-600 transition-colors"
+                      title="View Data"
+                    >
+                      <EyeIcon />
+                    </button>
+                    <button 
+                      onClick={() => handleDownload(session)}
+                      className="text-gray-400 hover:text-green-600 transition-colors"
+                      title="Download JSON"
+                    >
+                      <DownloadIcon />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -191,34 +232,6 @@ export default function SessionHistoryPage() {
           </div>
         )}
       </div>
-
-      {/* Brain Signals Popup */}
-      {isPopupOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-            {/* Popup Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h2 className="text-xl font-semibold text-gray-900">Brain Signals</h2>
-              <button
-                onClick={handleClosePopup}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-            
-            {/* Brain Signals Content */}
-            <div className="p-6 overflow-y-auto max-h-[60vh]">
-              <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm text-gray-700 whitespace-pre-wrap">
-                {hexCodes.join('\n')}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
