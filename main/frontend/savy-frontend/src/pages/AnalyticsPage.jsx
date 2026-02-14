@@ -253,7 +253,7 @@ export default function AnalyticsPage() {
             </span>
           </div>
           <p className="text-2xl font-semibold text-gray-900">{analyticsData.totalPatients}</p>
-          <p className="text-sm text-gray-500 mt-1">Total Patients</p>
+          <p className="text-sm text-gray-500 mt-1">Total Sessions</p>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-gray-100">
@@ -323,7 +323,7 @@ export default function AnalyticsPage() {
 
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <h3 className="font-medium text-gray-900 mb-6">Recent Activity</h3>
+          {/* <h3 className="font-medium text-gray-900 mb-6">Recent Activity</h3>
           <div className="space-y-4">
             {recentActivity.map((activity, index) => (
               <div key={index} className="flex items-center gap-4">
@@ -343,10 +343,10 @@ export default function AnalyticsPage() {
                 </span>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
+        {/* <div className="bg-white rounded-2xl p-6 border border-gray-100">
           <h3 className="font-medium text-gray-900 mb-6">System Health</h3>
           <div className="space-y-5">
             {[
@@ -369,7 +369,7 @@ export default function AnalyticsPage() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

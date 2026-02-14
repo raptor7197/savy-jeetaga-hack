@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import MetricCard from './components/MetricCard';
 import EEGChart from './components/EEGChart';
-import PatientListPage from './pages/PatientListPage';
+import SessionHistoryPage from './pages/SessionHistoryPage';
 import SessionArchivesPage from './pages/SessionArchivesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import CustomerProfilePage from './pages/CustomerProfilePage';
+import UserPage from './pages/UserPage';
+import DoctorAccessRequestPage from './pages/DoctorAccessRequestPage';
+import LoginPage from './pages/LoginPage';
 
 function HeartRateIcon() {
   return (
@@ -113,23 +116,51 @@ function DashboardPage({ isRecording }) {
 
 export default function App() {
   const [isRecording, setIsRecording] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setUserType] = useState(null);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const storedUserType = localStorage.getItem('userType');
+    if (storedUserType) {
+      setIsLoggedIn(true);
+      setUserType(storedUserType);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userType');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
+    setIsLoggedIn(false);
+    setUserType(null);
+  };
 
   return (
     <Router>
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
-        <div className="flex-1">
-          <Header isRecording={isRecording} setIsRecording={setIsRecording} />
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage isRecording={isRecording} />} />
-            <Route path="/patients" element={<PatientListPage />} />
-            <Route path="/archives" element={<SessionArchivesPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/profile" element={<CustomerProfilePage />} />
-          </Routes>
+      {!isLoggedIn ? (
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      ) : (
+        <div className="flex min-h-screen bg-gray-50">
+          <Sidebar />
+          <div className="flex-1">
+            <Header isRecording={isRecording} setIsRecording={setIsRecording} onLogout={handleLogout} />
+            <Routes>
+              <Route path="/" element={<Navigate to={userType === 'patient' ? '/user' : '/doctor-access'} replace />} />
+              <Route path="/dashboard" element={<DashboardPage isRecording={isRecording} />} />
+              <Route path="/sessions" element={<SessionHistoryPage />} />
+              <Route path="/archives" element={<SessionArchivesPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/profile" element={<CustomerProfilePage />} />
+              <Route path="/user" element={<UserPage />} />
+              <Route path="/doctor-access" element={<DoctorAccessRequestPage />} />
+            </Routes>
+          </div>
         </div>
-      </div>
+      )}
     </Router>
   );
 }

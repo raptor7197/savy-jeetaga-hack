@@ -2,10 +2,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard Home', icon: DashboardIcon, path: '/dashboard' },
-  { id: 'patients', label: 'Patient List', icon: PatientsIcon, path: '/patients' },
+  { id: 'sessions', label: 'Session History', icon: SessionsIcon, path: '/sessions' },
+  { id: 'doctor-access', label: 'Access Requests', icon: AccessIcon, path: '/doctor-access' },
   { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
   { id: 'profile', label: 'Customer Profile', icon: ProfileIcon, path: '/profile' },
+  { id: 'user', label: 'My Profile', icon: UserIcon, path: '/user' },
 ];
 
 const systemItems = [
@@ -20,6 +22,17 @@ function DashboardIcon() {
       <rect x="14" y="3" width="7" height="5" rx="1" />
       <rect x="14" y="12" width="7" height="9" rx="1" />
       <rect x="3" y="16" width="7" height="5" rx="1" />
+    </svg>
+  );
+}
+
+function SessionsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
     </svg>
   );
 }
@@ -64,6 +77,25 @@ function ProfileIcon() {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+      <path d="M12 11v6" />
+    </svg>
+  );
+}
+
+function AccessIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+    </svg>
+  );
+}
+
 function SettingsIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -99,10 +131,12 @@ export default function Sidebar() {
 
   const getActiveItem = () => {
     const path = location.pathname;
-    if (path.startsWith('/patients')) return 'patients';
+    if (path.startsWith('/sessions')) return 'sessions';
+    if (path.startsWith('/doctor-access')) return 'doctor-access';
     if (path.startsWith('/archives')) return 'archives';
     if (path.startsWith('/analytics')) return 'analytics';
     if (path.startsWith('/profile')) return 'profile';
+    if (path.startsWith('/user')) return 'user';
     return 'dashboard';
   };
 
@@ -159,11 +193,10 @@ export default function Sidebar() {
         <div className="p-4 border-t border-gray-200 mb-2">
             <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 cursor-pointer transition-colors border border-gray-100">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center overflow-hidden">
-                 <span className="text-white font-bold text-sm">AT</span>
+                 <span className="text-white font-bold text-sm">RS</span>
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">Dr. Aris Thorne</p>
-                <p className="text-xs text-gray-500">Neurologist</p>
+                <p className="text-sm font-semibold text-gray-900 truncate">rahul sharma</p>
             </div>
           </div>
         </div>
