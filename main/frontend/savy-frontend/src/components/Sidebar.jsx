@@ -5,6 +5,7 @@ const navItems = [
   { id: 'patients', label: 'Patient List', icon: PatientsIcon, path: '/patients' },
   { id: 'archives', label: 'Session Archives', icon: ArchivesIcon, path: '/archives' },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon, path: '/analytics' },
+  { id: 'profile', label: 'Customer Profile', icon: ProfileIcon, path: '/profile' },
 ];
 
 const systemItems = [
@@ -54,6 +55,15 @@ function AnalyticsIcon() {
   );
 }
 
+function ProfileIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
 function SettingsIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -92,6 +102,7 @@ export default function Sidebar() {
     if (path.startsWith('/patients')) return 'patients';
     if (path.startsWith('/archives')) return 'archives';
     if (path.startsWith('/analytics')) return 'analytics';
+    if (path.startsWith('/profile')) return 'profile';
     return 'dashboard';
   };
 

@@ -1,4 +1,4 @@
-export default function Header() {
+export default function Header({ isRecording, setIsRecording }) {
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-40 ml-[260px]">
       <div className="flex items-center gap-4">
@@ -20,19 +20,21 @@ export default function Header() {
           <input 
             type="text" 
             placeholder="Search patients, sessions..." 
-            className="w-72 pl-10 pr-4 py-2.5 bg-gray-50 border-0 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:bg-white transition-all"
+            className="w-72 pl-10 pr-4 py-2 bg-gray-50 border-0 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:bg-white transition-all"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-4 py-2 bg-red-50 rounded-full">
-          <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-          <span className="text-sm font-semibold text-red-600 tracking-wider">LIVE RECORDING</span>
-        </div>
-        <div className="text-xs text-gray-400 ml-2">
-          Session: #NEU-2024-0892
-        </div>
+        {isRecording && (
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-red-50 rounded-full">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span className="text-xs font-medium text-red-600">REC</span>
+          </div>
+        )}
+        <span className="text-xs text-gray-400">
+          {isRecording ? 'Recording Session #NEU-2024-0892' : 'No active session'}
+        </span>
       </div>
 
       <div className="flex items-center gap-3">
@@ -57,12 +59,29 @@ export default function Header() {
           </svg>
         </button>
 
-        <button className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-semibold text-sm rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all flex items-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          New Session
+        <button 
+          onClick={() => setIsRecording(!isRecording)}
+          className={`px-5 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center gap-2 ${
+            isRecording 
+              ? 'bg-red-500 hover:bg-red-600 text-white' 
+              : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+          }`}
+        >
+          {isRecording ? (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
+                <rect x="6" y="6" width="12" height="12" rx="2" />
+              </svg>
+              Stop Recording
+            </>
+          ) : (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="8" />
+              </svg>
+              Start Recording
+            </>
+          )}
         </button>
       </div>
     </header>
