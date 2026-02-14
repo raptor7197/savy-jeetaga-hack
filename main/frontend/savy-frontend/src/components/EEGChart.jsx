@@ -30,108 +30,89 @@ export default function EEGChart() {
     // Set canvas size
     const resizeCanvas = () => {
       const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
     };
     
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Wave configurations
     const waves = [
       { 
-        color: '#22c55e', 
-        amplitude: 35, 
+        color: '#22c55e', // Alpha - Green
+        amplitude: 30, 
         frequency: 0.02, 
         speed: 2,
-        offset: 0,
-        noise: 0.3
+        offset: 80,
+        noise: 0.2
       },
       { 
-        color: '#06b6d4', 
-        amplitude: 28, 
-        frequency: 0.025, 
+        color: '#0d9488', // Beta - Teal
+        amplitude: 25, 
+        frequency: 0.035, 
         speed: 2.5,
-        offset: 2,
-        noise: 0.4
+        offset: 150,
+        noise: 0.15
       },
       { 
-        color: '#f97316', 
-        amplitude: 42, 
-        frequency: 0.015, 
-        speed: 1.8,
-        offset: 4,
-        noise: 0.5
+        color: '#f97316', // Delta - Orange
+        amplitude: 40, 
+        frequency: 0.01, 
+        speed: 1.5,
+        offset: 220,
+        noise: 0.4
       }
     ];
 
-    // Grid configuration
-    const gridConfig = {
-      verticalSpacing: 30,
-      horizontalSpacing: 50,
-      color: 'rgba(255, 255, 255, 0.05)'
-    };
-
     let time = 0;
-    const drawWave = (wave, yOffset) => {
-      ctx.beginPath();
-      ctx.strokeStyle = wave.color;
-      ctx.lineWidth = 2;
-      ctx.shadowColor = wave.color;
-      ctx.shadowBlur = 8;
-
-      const centerY = canvas.height / 4 + yOffset * (canvas.height / 4);
-      
-      for (let x = 0; x < canvas.width; x++) {
-        const noise = (Math.random() - 0.5) * wave.noise * wave.amplitude;
-        const waveY = Math.sin((x + time * wave.speed) * wave.frequency + wave.offset) * wave.amplitude;
-        const y = centerY + waveY + noise;
-        
-        if (x === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-    };
-
-    const drawGrid = () => {
-      ctx.strokeStyle = gridConfig.color;
-      ctx.lineWidth = 1;
-      
-      // Vertical lines
-      for (let x = 0; x < canvas.width; x += gridConfig.horizontalSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-      
-      // Horizontal lines
-      for (let y = 0; y < canvas.height; y += gridConfig.verticalSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-    };
 
     const animate = () => {
-      // Clear canvas with dark background
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Clear with dark bg
+      ctx.fillStyle = '#0a0a0a'; 
+      const rect = canvas.parentElement.getBoundingClientRect();
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      // Draw Grid
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      const gridSize = 40;
       
-      // Draw grid
-      drawGrid();
-      
-      // Draw waves
-      waves.forEach((wave, index) => {
-        drawWave(wave, index);
+      ctx.beginPath();
+      // Vertical grid
+      for(let x = 0; x < rect.width; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, rect.height);
+      }
+      // Horizontal grid
+      for(let y = 0; y < rect.height; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(rect.width, y);
+      }
+      ctx.stroke();
+
+      // Draw Waves
+      waves.forEach((wave) => {
+        ctx.beginPath();
+        ctx.strokeStyle = wave.color;
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+
+        for (let x = 0; x < rect.width; x++) {
+          const t = x * wave.frequency + time * wave.speed;
+          const y = wave.offset + 
+             Math.sin(t) * wave.amplitude + 
+             Math.sin(t * 2.2) * (wave.amplitude * 0.3);
+
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
       });
-      
+
       time += 1;
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -140,44 +121,63 @@ export default function EEGChart() {
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      cancelAnimationFrame(animationRef.current);
     };
   }, [isVisible]);
 
   return (
-    <div className="card overflow-hidden opacity-0 animate-fade-slide-up animate-delay-5">
-      <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Live Multi-Channel EEG Feed</h3>
-          <p className="text-sm text-gray-500 mt-0.5">Real-time neural activity monitoring</p>
+    <div className="flex flex-col h-full bg-[#0a0a0a] text-white rounded-xl overflow-hidden shadow-lg border border-gray-800">
+        
+        {/* Header / Legend */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-[#0a0a0a]">
+            <h3 className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">Live Multi-Channel EEG Feed</h3>
+            <div className="flex gap-4">
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]"></span>
+                    <span className="text-[10px] uppercase font-bold text-gray-400">CH-1 Alpha</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]"></span>
+                    <span className="text-[10px] uppercase font-bold text-gray-400">CH-2 Beta</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f97316]"></span>
+                    <span className="text-[10px] uppercase font-bold text-gray-400">CH-3 Delta</span>
+                </div>
+            </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-sm text-gray-600">Alpha</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-cyan-500" />
-            <span className="text-sm text-gray-600">Beta</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-orange-500" />
-            <span className="text-sm text-gray-600">Delta</span>
-          </div>
+
+        {/* Canvas Area */}
+        <div className="flex-1 relative w-full h-[320px]">
+            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
         </div>
-      </div>
-      <div className="h-80 relative">
-        <canvas 
-          ref={canvasRef} 
-          className="w-full h-full"
-        />
-        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-green-500/20 rounded-full">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-xs font-medium text-green-400">Recording</span>
+
+        {/* Controls Footer */}
+        <div className="px-6 py-4 bg-[#0a0a0a] border-t border-gray-800 flex items-center justify-center gap-12">
+            <button className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                Pause Feed
+            </button>
+            <button className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                Snapshot
+            </button>
+             <button className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="20" x2="12" y2="10"></line>
+                    <line x1="18" y1="20" x2="18" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                </svg>
+                Channels
+            </button>
+            
         </div>
-      </div>
     </div>
   );
 }

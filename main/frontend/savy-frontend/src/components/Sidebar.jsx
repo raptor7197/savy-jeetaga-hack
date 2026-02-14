@@ -1,10 +1,15 @@
 import { useState } from 'react';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
+  { id: 'dashboard', label: 'Dashboard Home', icon: DashboardIcon },
   { id: 'patients', label: 'Patient List', icon: PatientsIcon },
   { id: 'archives', label: 'Session Archives', icon: ArchivesIcon },
   { id: 'analytics', label: 'Analytics', icon: AnalyticsIcon },
+];
+
+const systemItems = [
+  { id: 'settings', label: 'Device Settings', icon: SettingsIcon },
+  { id: 'support', label: 'Support', icon: SupportIcon },
 ];
 
 function DashboardIcon() {
@@ -49,9 +54,28 @@ function AnalyticsIcon() {
   );
 }
 
+function SettingsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+       <circle cx="12" cy="12" r="3"></circle>
+       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  );
+}
+
+function SupportIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+  );
+}
+
 function BrainIcon() {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 4.5a2.5 2.5 0 0 0-4.96-.46 2.5 2.5 0 0 0-1.98 3 2.5 2.5 0 0 0 1.32 4.24 3 3 0 0 0 .34 5.58 2.5 2.5 0 0 0 5.28.55" />
       <path d="M12 4.5a2.5 2.5 0 0 1 4.96-.46 2.5 2.5 0 0 1 1.98 3 2.5 2.5 0 0 1-1.32 4.24 3 3 0 0 1-.34 5.58 2.5 2.5 0 0 1-5.28.55" />
       <path d="M12 4.5v16" />
@@ -63,47 +87,62 @@ export default function Sidebar() {
   const [activeItem, setActiveItem] = useState('dashboard');
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[250px] bg-white border-r border-gray-100 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-white border-r border-gray-100 flex flex-col z-50 font-sans">
       {/* Logo Section */}
-      <div className="p-6 flex items-center gap-3 border-b border-gray-100">
-        <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+      <div className="px-6 py-6 flex items-center gap-3">
+        <div className="w-8 h-8 bg-[#f97316] rounded-lg flex items-center justify-center">
           <BrainIcon />
         </div>
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">Neuro Monitor</h1>
-          <p className="text-xs text-gray-400">v2.0.1</p>
+          <h1 className="text-lg font-bold text-gray-900 tracking-tight">Neuro Monitor</h1>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setActiveItem(item.id)}
-            className={`sidebar-item w-full ${activeItem === item.id ? 'active' : ''}`}
-          >
-            <item.icon />
-            <span className="font-medium">{item.label}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="flex-1 flex flex-col justify-between overflow-y-auto">
+        <nav className="px-4 space-y-1 mt-2">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveItem(item.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+                activeItem === item.id 
+                  ? 'bg-orange-50 text-[#f97316]' 
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <item.icon />
+              <span>{item.label}</span>
+            </button>
+          ))}
+          
+          <div className="pt-6 pb-2 px-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">System</p>
+          </div>
+          
+          {systemItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveItem(item.id)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all"
+            >
+              <item.icon />
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
 
-      {/* User Profile Section */}
-      <div className="p-4 border-t border-gray-100">
-        <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center text-white font-medium">
-            JD
+        {/* User Profile Section */}
+        <div className="p-4 border-t border-gray-100 mb-2">
+            <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
+                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate">Dr. Aris Thorne</p>
+                <p className="text-xs text-gray-500">Neurologist</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">Dr. Jane Doe</p>
-            <p className="text-xs text-gray-500">Neurologist</p>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
-            <circle cx="12" cy="12" r="1" />
-            <circle cx="19" cy="12" r="1" />
-            <circle cx="5" cy="12" r="1" />
-          </svg>
         </div>
       </div>
     </aside>
